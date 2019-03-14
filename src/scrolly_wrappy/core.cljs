@@ -6,7 +6,7 @@
     [goog.events :as events]))
 
 
-(defn scrolly-wrappy [element-width initial-centre is-dragged-atom element]
+(defn scrolly-wrappy [initial-centre is-dragged-atom element]
   (let [drag-start-mouse-x (r/atom nil)
         drag-start-mouse-y (r/atom nil)
         drag-start-wrapper-scroll-x (r/atom nil)
@@ -17,14 +17,21 @@
 
       :component-did-mount
       (fn scroll-sync [this]
-        (let [scrollbar (aget this.refs "scrollbar-top")
-              overflow-wrapper (aget this.refs "overflow-wrapper")
+        (let [scrollbar (goog.object/get this.refs "scrollbar-top")
+              overflow-wrapper (goog.object/get this.refs "overflow-wrapper")
+              wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
+              wrapped-width (.-width (js/getComputedStyle wrapped-dom))
+              top-scrollbar-width-box (goog.object/get this.refs "top-scrollbar-width-box")
+              initial-centre (or initial-centre (/ wrapped-width 2))
               visible-width overflow-wrapper.offsetWidth
               initial-left-edge-offset (- initial-centre (/ visible-width 2))
               apply-scroll (fn apply-scroll [element left-offset]
-                             (aset element "scrollLeft" left-offset))
+                             (set! (.-scrollLeft element) left-offset))
               copy-scroll (fn copy-scroll [destination source]
                             (apply-scroll destination source.target.scrollLeft))]
+
+          ;; Apply wrapped DOM width to the top scrollbar.
+          (set! (.. top-scrollbar-width-box -style -width) wrapped-width)
 
           ;; Mirror scrollbars position.
           (events/listen scrollbar "scroll" (partial copy-scroll overflow-wrapper))
@@ -65,14 +72,13 @@
             (events/listen js/window "mouseup" stop-mouse-drag))))
 
       :reagent-render
-      (fn scrolly-wrappy-render [element-width _ _ element]
+      (fn scrolly-wrappy-render [_ _ element]
         [:div
          ;; Scrollbar on the top:
          [:div.scrollbar {:style {:overflow-x "auto" :overflow-y "hidden" :height "20px"}
                           :ref "scrollbar-top"}
-          [:div {:style {:width element-width :height "20px"}}]]
+          [:div {:ref "top-scrollbar-width-box" :style {:height "20px"}}]]
 
          ;; Scroll wrapper with a scrollbar on the bottom:
          [:div.overflow-wrapper {:style {:overflow-x "auto"} :ref "overflow-wrapper"}
-          [:div {:style {:width element-width :margin "0 auto"}}
-           element]]])})))
+          element]])})))

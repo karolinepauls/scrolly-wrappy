@@ -49,7 +49,7 @@
 
 (defn demo []
   [:div.demo
-   [scrolly-wrappy element-width (half element-width) dragged?
+   [scrolly-wrappy (half element-width) dragged?
     [sample-svg 5 element-width element-height]
     ]])
 
