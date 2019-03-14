@@ -93,7 +93,7 @@
          ]])]
 
     [:ul.links
-     [:li [:a {:href "#"} "Repo"]]
+     [:li [:a {:href "https://gitlab.com/karolinepauls/scrolly-wrappy"} "Repo"]]
      [:li [:a {:href "#"} "Package"]]]]
    [demo-view]
    [:footer
