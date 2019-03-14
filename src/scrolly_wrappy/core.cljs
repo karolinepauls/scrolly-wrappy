@@ -16,7 +16,7 @@
      {:display-name "scrolly-wrappy"
 
       :component-did-mount
-      (fn scroll-sync [this]
+      (fn setup-scroll-sync [this]
         (let [scrollbar (goog.object/get this.refs "scrollbar-top")
               overflow-wrapper (goog.object/get this.refs "overflow-wrapper")
               wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
@@ -70,6 +70,14 @@
                                     (doto e .preventDefault .stopPropagation)))]
             (events/listen overflow-wrapper "mousedown" start-mouse-drag)
             (events/listen js/window "mouseup" stop-mouse-drag))))
+
+      :component-did-update
+      (fn update-width [this]
+        (let [overflow-wrapper (goog.object/get this.refs "overflow-wrapper")
+              wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
+              wrapped-width (.-width (js/getComputedStyle wrapped-dom))
+              top-scrollbar-width-box (goog.object/get this.refs "top-scrollbar-width-box")]
+          (set! (.. top-scrollbar-width-box -style -width) wrapped-width)))
 
       :reagent-render
       (fn scrolly-wrappy-render [_ _ element]
