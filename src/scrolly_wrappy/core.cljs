@@ -94,12 +94,15 @@
 
       :reagent-render
       (fn scrolly-wrappy-render [_ element]
-        [:div
-         ;; Scrollbar on the top:
-         [:div.scrollbar {:style {:overflow-x "auto" :overflow-y "hidden" :height "20px"}
-                          :ref "scrollbar-top"}
-          [:div {:ref "top-scrollbar-width-box" :style {:height "20px"}}]]
+        [:div.scrolly-wrappy
+         ;; Top scrollbar:
+         [:div.scrolly-wrappy-top-scrollbar
+          {:style {:overflow-x "auto" :overflow-y "hidden" :height "20px"}
+           :ref "scrollbar-top"}
+          ;; Fake content to force the scrollbar to appear. Must have some height, so it affects
+          ;; the elements. Width should be dynamically set to wrapped content width.
+          [:div {:ref "top-scrollbar-width-box" :style {:height "1px" :visibility "hidden"}}]]
 
          ;; Scroll wrapper with a scrollbar on the bottom:
-         [:div.overflow-wrapper {:style {:overflow-x "auto"} :ref "overflow-wrapper"}
+         [:div.scrolly-wrappy-wrapper {:style {:overflow-x "auto"} :ref "overflow-wrapper"}
           element]])})))

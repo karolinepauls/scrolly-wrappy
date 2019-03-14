@@ -55,6 +55,6 @@ table.sample tr td {
     min-width: 4ex;
 }
 
-div.overflow-wrapper:hover {
+div.scrolly-wrappy-wrapper:hover {
     cursor: pointer;
 }
