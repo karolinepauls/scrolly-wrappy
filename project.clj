@@ -31,27 +31,18 @@
 
                 :compiler {:main scrolly-wrappy.dev
                            :asset-path "js/compiled/out"
-                           :output-to "resources/public/js/compiled/scrolly_wrappy.js"
-                           :output-dir "resources/public/js/compiled/out"
+                           :output-to "dev-resources/public/js/compiled/scrolly_wrappy.js"
+                           :output-dir "dev-resources/public/js/compiled/out"
                            :source-map-timestamp true
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
-                           :preloads [devtools.preload]}}
-               ;; This next build is a compressed minified build for
-               ;; production. You can build this with:
-               ;; lein cljsbuild once min
-               {:id "min"
-                :source-paths ["src"]
-                :compiler {:output-to "resources/public/js/compiled/scrolly_wrappy.js"
-                           :main scrolly-wrappy.core
-                           :optimizations :advanced
-                           :pretty-print false}}]}
+                           :preloads [devtools.preload]}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
              ;; :server-ip "127.0.0.1"
 
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
+             :css-dirs ["dev-resources/public/css"] ;; watch and update CSS
 
              ;; Start an nREPL server into the running figwheel process
              ;; :nrepl-port 7888
@@ -99,5 +90,5 @@
                    ;; :plugins [[cider/cider-nrepl "0.12.0"]]
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
                    ;; need to add the compliled assets to the :clean-targets
-                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
+                   :clean-targets ^{:protect false} ["dev-resources/public/js/compiled"
                                                      :target-path]}})
