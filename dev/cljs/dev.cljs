@@ -62,8 +62,12 @@
 (defn demo-view []
   [:div.demo
    (case @selected-demo
-     :svg [scrolly-wrappy (half element-width) dragged? [demo-svg 5 element-width element-height]]
-     :table [scrolly-wrappy 0 dragged? [demo-table @table-size]])])
+     :svg [scrolly-wrappy
+           {:is-dragged-atom dragged?}
+           [demo-svg 5 element-width element-height]]
+     :table [scrolly-wrappy
+             {:initial-centre-fn (constantly 0) :is-dragged-atom dragged?}
+             [demo-table @table-size]])])
 
 (defn page []
   [:div

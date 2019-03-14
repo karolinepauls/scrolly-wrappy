@@ -6,11 +6,24 @@
     [goog.events :as events]))
 
 
-(defn scrolly-wrappy [initial-centre is-dragged-atom element]
-  (let [drag-start-mouse-x (r/atom nil)
-        drag-start-mouse-y (r/atom nil)
-        drag-start-wrapper-scroll-x (r/atom nil)
-        drag-start-window-scroll-y (r/atom nil)]
+(defn- noop [])
+
+(defn scrolly-wrappy
+  "Wrap content horizontally and enable horizontal and vertical drag-to-scroll. Vertical scroll is
+  window scroll.
+
+  Options:
+  initial-centre-fn takes wrapped element width in px and returns which pixel should be centred.
+  on-drag-start on-drag-end are callbacks with no args."
+  [{:keys [initial-centre-fn on-drag-start on-drag-end]
+    :or {on-drag-start noop
+         on-drag-end noop
+         initial-centre-fn (fn [width] (/ width 2))}}
+   element]
+  (let [drag-start-mouse-x (atom nil)
+        drag-start-mouse-y (atom nil)
+        drag-start-wrapper-scroll-x (atom nil)
+        drag-start-window-scroll-y (atom nil)]
 
     (r/create-class
      {:display-name "scrolly-wrappy"
@@ -22,7 +35,7 @@
               wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
               wrapped-width (.-width (js/getComputedStyle wrapped-dom))
               top-scrollbar-width-box (goog.object/get this.refs "top-scrollbar-width-box")
-              initial-centre (or initial-centre (/ wrapped-width 2))
+              initial-centre (initial-centre-fn (js/parseInt wrapped-width))
               visible-width overflow-wrapper.offsetWidth
               initial-left-edge-offset (- initial-centre (/ visible-width 2))
               apply-scroll (fn apply-scroll [element left-offset]
@@ -48,7 +61,7 @@
                                          y-delta (- @drag-start-mouse-y e.screenY)
                                          horizontal-scroll-offset (+ @drag-start-window-scroll-y y-delta)
                                          veritcal-scroll-offset (+ @drag-start-wrapper-scroll-x x-delta)]
-                                     (reset! is-dragged-atom true)
+                                     (on-drag-start)
                                      (js/requestAnimationFrame
                                       (fn []
                                         (apply-scroll overflow-wrapper veritcal-scroll-offset)
@@ -66,7 +79,7 @@
                 stop-mouse-drag (fn [e]
                                   (when (= e.button 0)
                                     (events/unlisten js/window "mousemove" apply-mouse-drag)
-                                    (reset! is-dragged-atom false)
+                                    (on-drag-end)
                                     (doto e .preventDefault .stopPropagation)))]
             (events/listen overflow-wrapper "mousedown" start-mouse-drag)
             (events/listen js/window "mouseup" stop-mouse-drag))))
@@ -80,7 +93,7 @@
           (set! (.. top-scrollbar-width-box -style -width) wrapped-width)))
 
       :reagent-render
-      (fn scrolly-wrappy-render [_ _ element]
+      (fn scrolly-wrappy-render [_ element]
         [:div
          ;; Scrollbar on the top:
          [:div.scrollbar {:style {:overflow-x "auto" :overflow-y "hidden" :height "20px"}
