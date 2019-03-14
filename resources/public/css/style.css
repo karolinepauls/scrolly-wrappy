@@ -1,0 +1,40 @@
+body {
+    font-family: 'Helvetica Neue', Verdana, Helvetica, Arial, sans-serif;
+    max-width: 60%;
+    margin: 0 auto;
+    padding-top: 1vh;
+    -webkit-font-smoothing: antialiased;
+    font-size: 1.125em;
+    color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: #da5724;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+ul.links {
+    display: inline;
+    float: right;
+    list-style-type: none;
+
+    margin: 0;
+    padding: 0;
+}
+
+ul.links li {
+    display: inline;
+}
+
+ul.links li a {
+    display: inline-block;
+    padding-right: 1em;
+}
+
+div.demo {
+    margin: 1.5em 0 1.5em 0;
+}
