@@ -9,7 +9,9 @@
 (def element-width 2000)
 (def element-height 1000)
 
-(def dragged? (atom false))
+(defonce dragged? (atom false))
+(defonce selected-demo (r/atom :svg))
+(defonce table-size (r/atom 40))
 
 (def half (partial * 0.5))
 
@@ -29,7 +31,7 @@
       [(scale-w (js/Math.sin (+ (* a t) delta)))
        (scale-h (js/Math.sin (* b t)))])))
 
-(defn sample-svg [margin width height]
+(defn demo-svg [margin width height]
   (let [[[x-start y-start] seq-rest]
         ((juxt first rest)
          (lissajous-seq margin width height
@@ -47,21 +49,49 @@
              :stroke-width "2px"}]
      ]))
 
-(defn demo []
+(defn demo-table [n]
+  (let [num-range (range 1 (inc n))
+        multiplication-table (partition n (for [x num-range y num-range] (* x y)))]
+    [:table.sample
+     [:tbody
+      (for [row multiplication-table]
+        [:tr {:key (first row)}
+         (for [cell row] [:td {:key cell} cell])
+         ])]]))
+
+(defn demo-view []
   [:div.demo
-   [scrolly-wrappy (half element-width) dragged?
-    [sample-svg 5 element-width element-height]
-    ]])
+   (case @selected-demo
+     :svg [scrolly-wrappy (half element-width) dragged? [demo-svg 5 element-width element-height]]
+     :table [scrolly-wrappy 0 dragged? [demo-table @table-size]])])
 
 (defn page []
   [:div
    [:header
     [:h1 "Scrolly-wrappy demo"]
-    [:span "Drag the image to scroll!"]
+
+    [:form.controls
+     [:label {:for "demo"} "Demo "]
+     [:select {:id "demo"
+               :value (name @selected-demo)
+               :on-change #(reset! selected-demo (-> % .-target .-value keyword))}
+      [:option {:value "svg"} "SVG"]
+      [:option {:value "table"} "Table"]]
+
+     (when (= @selected-demo :table)
+       [:span
+        [:label {:for "table-size"} "Table size "]
+        [:select {:id "demo"
+                  :value @table-size
+                  :on-change #(reset! table-size (-> % .-target .-value js/parseInt))}
+         (doall (for [n [10 20 30 40 50]]
+                  [:option {:value n :key n} n]))
+         ]])]
+
     [:ul.links
      [:li [:a {:href "#"} "Repo"]]
      [:li [:a {:href "#"} "Package"]]]]
-   [demo]
+   [demo-view]
    [:footer
     [:p
      "Special thanks to: Clojure/ClojureScript community, the Reagent project, "
