@@ -1,13 +1,12 @@
 (defproject scrolly-wrappy "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
+  :description "Drag-to-scroll for Reagent"
+  :url "https://gitlab.com/karolinepauls/scrolly-wrappy"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :min-lein-version "2.7.1"
 
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/clojurescript "1.10.238"]
-                 [org.clojure/core.async  "0.4.474"]
+                 [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
                  ]
 
@@ -91,9 +90,9 @@
   ;; Setting up nREPL for Figwheel and ClojureScript dev
   ;; Please see:
   ;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.9"]
+  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
                                   [figwheel-sidecar "0.5.16"]
-                                  [cider/piggieback "0.3.1"]]
+                                  [cider/piggieback "0.4.0"]]
                    ;; need to add dev source path here to get user.clj loaded
                    :source-paths ["src" "dev/clj"]
                    ;; for CIDER

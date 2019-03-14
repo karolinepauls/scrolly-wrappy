@@ -1,4 +1,6 @@
 (ns scrolly-wrappy.core
+  "A Reagent component to wrap an element, providing drag-to-scroll vertically synchronized with the
+  browser window and horizontally scrolling its own viewport."
   (:require
     [reagent.core :as r]
     [goog.events :as events]))
