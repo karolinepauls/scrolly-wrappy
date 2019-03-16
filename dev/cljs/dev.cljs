@@ -9,7 +9,6 @@
 (def element-width 2000)
 (def element-height 1000)
 
-(defonce dragged? (atom false))
 (defonce selected-demo (r/atom :svg))
 (defonce table-size (r/atom 40))
 
@@ -63,10 +62,9 @@
   [:div.demo
    (case @selected-demo
      :svg ^{:key :svg} [scrolly-wrappy
-                        {:is-dragged-atom dragged?}
                         [demo-svg 5 element-width element-height]]
      :table ^{:key :table} [scrolly-wrappy
-                            {:initial-centre-fn (constantly 0) :is-dragged-atom dragged?}
+                            {:initial-centre-fn (constantly 0)}
                             [demo-table @table-size]])])
 
 (defn page []
