@@ -6,8 +6,7 @@
 
 (enable-console-print!)
 
-(def element-width 2000)
-(def element-height 1000)
+(def svg-size (r/atom 2000))
 
 (defonce selected-demo (r/atom :svg))
 (defonce table-size (r/atom 40))
@@ -37,7 +36,7 @@
                         0
                         5 6
                         1000))]
-    [:svg {:width width :height height :viewBox (str "0 0 " width " " height)}
+    [:svg.sample {:width width :height height :viewBox (str "0 0 " width " " height)}
      [:path {:d (apply str
                        (cons
                          (str "M " x-start " " y-start)
@@ -62,10 +61,20 @@
   [:div.demo
    (case @selected-demo
      :svg ^{:key :svg} [scrolly-wrappy
-                        [demo-svg 5 element-width element-height]]
+                        [demo-svg 5 @svg-size (half @svg-size)]]
      :table ^{:key :table} [scrolly-wrappy
                             {:initial-centre-fn (constantly 0)}
                             [demo-table @table-size]])])
+
+;; Written for README.
+;(def is-dragged? (r/atom false))
+;
+;(defn demo-view []
+;  [scrolly-wrappy {:initial-centre-fn (fn [width] (- width (/ width 4)))
+;                   :on-drag-start #(reset! is-dragged? true)
+;                   :on-drag-end #(reset! is-dragged? false)}
+;   [:svg {:width "2000px" :height "2000px"}
+;    [:path {:d "M 1 1999 L 999 1 L 1999 1999 L 1 1999" :fill "#aaa" :stroke "#333"}]]])
 
 (defn page []
   [:div
@@ -80,15 +89,21 @@
       [:option {:value "svg"} "SVG"]
       [:option {:value "table"} "Table"]]
 
-     (when (= @selected-demo :table)
-       [:span
-        [:label {:for "table-size"} "Table size "]
-        [:select {:id "demo"
-                  :value @table-size
-                  :on-change #(reset! table-size (-> % .-target .-value js/parseInt))}
-         (doall (for [n [10 20 30 40 50]]
-                  [:option {:value n :key n} n]))
-         ]])]
+     (case @selected-demo
+       :table [:span
+               [:label {:for "table-size"} "Table size "]
+               [:select {:id "table-size"
+                         :value @table-size
+                         :on-change #(reset! table-size (-> % .-target .-value js/parseInt))}
+                (for [n [10 20 30 40 50]]
+                  [:option {:value n :key n} n])]]
+       :svg [:span
+               [:label {:for "svg-size"} "SVG size "]
+               [:select {:id "svg-size"
+                         :value @svg-size
+                         :on-change #(reset! svg-size (-> % .-target .-value js/parseInt))}
+                (for [n [200 500 1000 1500 2000 4000 8000 16000]]
+                  [:option {:value n :key n} n])]])]
 
     [:ul.links
      [:li [:a {:href "https://gitlab.com/karolinepauls/scrolly-wrappy"} "Repo"]]

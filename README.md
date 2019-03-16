@@ -7,6 +7,40 @@ Reagent component to provide a friendly drag-to-scroll experience for desktop.
 The component wraps arbitrarily long and wide content, providing horizontal drag-to-scroll within
 the boundaries of the wrapper and vertical drag-to-scroll synchronised with the entire page.
 
+```clojure
+(defn demo-view []
+  [scrolly-wrappy
+   [:svg {:width "2000px" :height "2000px"}
+    [:path {:d "M 1 1999 L 999 1 L 1999 1999 L 1 1999" :fill "#aaa" :stroke "#333"}]]])
+```
+
+It is the caller's job to correctly centre the content in case happens to be smaller than the
+wrapper.
+
+
+### Options
+
+```clojure
+(def is-dragged? (r/atom false))  ; Use it do e.g. disable interactivity of dragged content.
+
+(defn demo-view []
+  [scrolly-wrappy {:initial-centre-fn (fn [width] (- width (/ width 4)))  ; Centre at 3/4.
+                   :on-drag-start #(reset! is-dragged? true)
+                   :on-drag-end #(reset! is-dragged? false)}
+   [:svg {:width "2000px" :height "2000px"}
+    [:path {:d "M 1 1999 L 999 1 L 1999 1999 L 1 1999" :fill "#aaa" :stroke "#333"}]]])
+```
+
+### Style
+
+You may want to add the following CSS.
+
+```css
+div.scrolly-wrappy-wrapper:hover {
+    cursor: pointer;
+}
+```
+
 ## Dev/demo Setup
 
 To get an interactive development environment run:

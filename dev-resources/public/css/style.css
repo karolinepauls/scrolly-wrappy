@@ -47,6 +47,11 @@ div.demo {
     margin: 1.5em 0 1.5em 0;
 }
 
+svg.sample {
+    display: block;
+    margin: 0 auto;
+}
+
 table.sample {
     text-align: right;
     border-spacing: 2ex 0;
