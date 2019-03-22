@@ -1,6 +1,10 @@
 # scrolly-wrappy
 
-Reagent component to provide a friendly drag-to-scroll experience for desktop.
+Reagent component to provide a friendly 2-dimensional drag-to-scroll experience.
+
+On mobile (tested on Firefox for Android and Chrome) the difference from the native experience
+is in 2-dimensionality of scrolling (normally it is locked to whichever axis the browser detects as
+dominating) and lack of momentum-based scrolling, which may be detrimental.
 
 ## Overview
 

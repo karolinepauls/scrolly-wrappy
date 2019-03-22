@@ -5,6 +5,9 @@
     [reagent.core :as r]
     [goog.events :as events]))
 
+(def ^{:private true} start-drag-events ["mousedown" "touchstart"])
+(def ^{:private true} stop-drag-events ["mouseup" "touchend" "touchcancel"])
+(def ^{:private true} drag-events ["mousemove" "touchmove"])
 
 (defn- noop [])
 
@@ -14,7 +17,8 @@
 
   Options:
   initial-centre-fn takes wrapped element width in px and returns which pixel should be centred.
-  on-drag-start on-drag-end are callbacks with no args."
+  The default centres in half.
+  on-drag-start on-drag-end are user callbacks with no args, useful to coordinate."
   ([element] (scrolly-wrappy {} element))
   ([{:keys [initial-centre-fn on-drag-start on-drag-end]
      :or {on-drag-start noop
@@ -42,7 +46,8 @@
                 apply-scroll (fn apply-scroll [element left-offset]
                                (set! (.-scrollLeft element) left-offset))
                 copy-scroll (fn copy-scroll [destination source]
-                              (apply-scroll destination source.target.scrollLeft))]
+                              (apply-scroll destination source.target.scrollLeft)
+                              (doto source .preventDefault .stopPropagation))]
 
             ;; Apply wrapped DOM width to the top scrollbar.
             (set! (.. top-scrollbar-width-box -style -width) wrapped-width)
@@ -57,33 +62,45 @@
             ;; Drag-to-scroll
             ;; We listen to mousemove and mouseup on window, so we get the events even if the cursor
             ;; is outside of the document.
-            (let [apply-mouse-drag (fn [e]
-                                     (let [x-delta (- @drag-start-mouse-x e.screenX)
-                                           y-delta (- @drag-start-mouse-y e.screenY)
-                                           horizontal-scroll-offset (+ @drag-start-window-scroll-y y-delta)
-                                           veritcal-scroll-offset (+ @drag-start-wrapper-scroll-x x-delta)]
-                                       (on-drag-start)
-                                       (js/requestAnimationFrame
-                                         (fn []
-                                           (apply-scroll overflow-wrapper veritcal-scroll-offset)
-                                           (.scrollTo js/window
-                                                      js/window.scrollX horizontal-scroll-offset))))
-                                     (doto e .preventDefault .stopPropagation))
-                  start-mouse-drag (fn [e]
-                                     (when (= e.button 0)
-                                       (reset! drag-start-mouse-x e.screenX)
-                                       (reset! drag-start-mouse-y e.screenY)
-                                       (reset! drag-start-wrapper-scroll-x overflow-wrapper.scrollLeft)
-                                       (reset! drag-start-window-scroll-y js/window.scrollY)
-                                       (events/listen js/window "mousemove" apply-mouse-drag)
-                                       (doto e .preventDefault .stopPropagation)))
-                  stop-mouse-drag (fn [e]
-                                    (when (= e.button 0)
-                                      (events/unlisten js/window "mousemove" apply-mouse-drag)
-                                      (on-drag-end)
-                                      (doto e .preventDefault .stopPropagation)))]
-              (events/listen overflow-wrapper "mousedown" start-mouse-drag)
-              (events/listen js/window "mouseup" stop-mouse-drag))))
+            (letfn [(apply-mouse-drag [e]
+                      (let [x-delta (- @drag-start-mouse-x e.screenX)
+                            y-delta (- @drag-start-mouse-y e.screenY)
+                            horizontal-scroll-offset (+ @drag-start-window-scroll-y y-delta)
+                            veritcal-scroll-offset (+ @drag-start-wrapper-scroll-x x-delta)]
+                        (on-drag-start)
+                        (js/requestAnimationFrame
+                          (fn []
+                            (apply-scroll overflow-wrapper veritcal-scroll-offset)
+                            (.scrollTo js/window
+                                       js/window.scrollX horizontal-scroll-offset))))
+                      (doto e .preventDefault .stopPropagation))
+                    (start-drag [e]
+                      (when (or (and (= e.type "mousedown") (= e.button 0))
+                                (= e.type "touchstart"))
+                        (reset! drag-start-mouse-x e.screenX)
+                        (reset! drag-start-mouse-y e.screenY)
+                        (reset! drag-start-wrapper-scroll-x overflow-wrapper.scrollLeft)
+                        (reset! drag-start-window-scroll-y js/window.scrollY)
+
+                        (doseq [ev drag-events]
+                          (events/listen js/window ev apply-mouse-drag))
+                        (doseq [ev stop-drag-events]
+                          (events/listen js/window ev stop-drag))
+
+                        (doto e .preventDefault .stopPropagation)))
+                    (stop-drag [e]
+                      (when (or (and (= e.type "mouseup") (= e.button 0))
+                                (= e.type "touchend")
+                                (= e.type "touchcancel"))
+                        (doseq [ev drag-events]
+                          (events/unlisten js/window ev apply-mouse-drag))
+                        (doseq [ev stop-drag-events]
+                          (events/unlisten js/window ev stop-drag))
+
+                        (on-drag-end)
+                        (doto e .preventDefault .stopPropagation)))]
+              (doseq [ev start-drag-events]
+                (events/listen overflow-wrapper ev start-drag)))))
 
         :component-did-update
         (fn update-width [this]

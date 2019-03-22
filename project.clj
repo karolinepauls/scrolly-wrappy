@@ -23,6 +23,7 @@
                 ;; will cause figwheel to inject the figwheel client
                 ;; into your build
                 :figwheel {:on-jsload "scrolly-wrappy.dev/on-js-reload"
+                           :websocket-host :js-client-host
                            ;; :open-urls will pop open your application
                            ;; in the default browser once Figwheel has
                            ;; started and compiled your application.
@@ -40,7 +41,9 @@
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1"
+
+             ;; To connect a phone over LAN:
+             ;:server-ip "0.0.0.0"
 
              :css-dirs ["dev-resources/public/css"] ;; watch and update CSS
 

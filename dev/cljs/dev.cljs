@@ -4,8 +4,6 @@
     [reagent.core :as r]
     [scrolly-wrappy.core :refer [scrolly-wrappy]]))
 
-(enable-console-print!)
-
 (def svg-size (r/atom 2000))
 
 (defonce selected-demo (r/atom :svg))
