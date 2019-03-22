@@ -8,6 +8,8 @@ dominating) and lack of momentum-based scrolling, which may be detrimental.
 
 ## Overview
 
+![scrolly-wrappy in action](scrolly-wrappy.gif)
+
 The component wraps arbitrarily long and wide content, providing horizontal drag-to-scroll within
 the boundaries of the wrapper and vertical drag-to-scroll synchronised with the entire page.
 
