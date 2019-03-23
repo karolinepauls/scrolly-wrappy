@@ -1,4 +1,4 @@
-# scrolly-wrappy
+# scrolly-wrappy [![Clojars Project](https://img.shields.io/clojars/v/org.clojars.karo/scrolly-wrappy.svg)](https://clojars.org/org.clojars.karo/scrolly-wrappy)
 
 Reagent component to provide a friendly 2-dimensional drag-to-scroll experience.
 
@@ -6,9 +6,9 @@ On mobile (tested on Firefox for Android and Chrome) the difference from the nat
 is in 2-dimensionality of scrolling (normally it is locked to whichever axis the browser detects as
 dominating) and lack of momentum-based scrolling, which may be detrimental.
 
-## Overview
-
 ![scrolly-wrappy in action](scrolly-wrappy.gif)
+
+## Overview
 
 The component wraps arbitrarily long and wide content, providing horizontal drag-to-scroll within
 the boundaries of the wrapper and vertical drag-to-scroll synchronised with the entire page.

@@ -105,7 +105,7 @@
 
     [:ul.links
      [:li [:a {:href "https://gitlab.com/karolinepauls/scrolly-wrappy"} "Repo"]]
-     [:li [:a {:href "#"} "Package"]]]]
+     [:li [:a {:href "https://clojars.org/org.clojars.karo/scrolly-wrappy"} "Package"]]]]
    [demo-view]
    [:footer
     [:p
