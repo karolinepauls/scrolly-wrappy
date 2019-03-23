@@ -49,7 +49,7 @@ div.scrolly-wrappy-wrapper:hover {
 
 ## Dev/demo Setup
 
-To get an interactive development environment run:
+To get an interactive development environment/demo run:
 
     lein figwheel
 
@@ -66,9 +66,9 @@ To clean all compiled files:
 
     lein clean
 
-To create a production build run:
+To build a figwheel-less demo, run:
 
-    lein do clean, cljsbuild once min
+    lein do clean, cljsbuild once static-demo
 
 And open your browser in `resources/public/index.html`. You will not
 get live reloading, nor a REPL. 
