@@ -1,4 +1,4 @@
-(defproject scrolly-wrappy "0.1.0-SNAPSHOT"
+(defproject org.clojars.karo/scrolly-wrappy "0.1.0"
   :description "Drag-to-scroll for Reagent"
   :url "https://gitlab.com/karolinepauls/scrolly-wrappy"
   :license {:name "Eclipse Public License"
