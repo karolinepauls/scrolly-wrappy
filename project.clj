@@ -37,7 +37,13 @@
                            :source-map-timestamp true
                            ;; To console.log CLJS data-structures make sure you enable devtools in Chrome
                            ;; https://github.com/binaryage/cljs-devtools
-                           :preloads [devtools.preload]}}]}
+                           :preloads [devtools.preload]}}
+               ; Builds a static demo in dev-resources that can be opened directly, without figwheel.
+               {:id "static-demo"
+                :source-paths ["src", "dev/cljs"]
+                :compiler {:asset-path "js/compiled/out"
+                           :output-to "dev-resources/public/js/compiled/scrolly_wrappy.js"
+                           :optimizations :advanced}}]}
 
   :figwheel {;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default

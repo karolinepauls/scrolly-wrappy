@@ -1,0 +1,12 @@
+image: clojure
+
+pages:
+  script:
+    - lein cljsbuild once static-demo
+    - mv dev-resources/public/ public
+    - find public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
