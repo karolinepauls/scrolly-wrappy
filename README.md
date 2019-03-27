@@ -1,4 +1,4 @@
-# scrolly-wrappy [![Clojars Project](https://img.shields.io/clojars/v/org.clojars.karo/scrolly-wrappy.svg)](https://clojars.org/org.clojars.karo/scrolly-wrappy)
+# scrolly-wrappy [![Clojars Project](https://img.shields.io/clojars/v/scrolly-wrappy.svg)](https://clojars.org/scrolly-wrappy)
 
 Reagent component to provide a friendly 2-dimensional drag-to-scroll experience. [Browser demo](https://karolinepauls.gitlab.io/scrolly-wrappy/).
 
