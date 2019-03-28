@@ -3,7 +3,8 @@
   browser window and horizontally scrolling its own viewport."
   (:require
     [reagent.core :as r]
-    [goog.events :as events]))
+    [goog.events :as events]
+    [goog.object :as o]))
 
 (def ^{:private true} start-drag-events ["mousedown" "touchstart"])
 (def ^{:private true} stop-drag-events ["mouseup" "touchend" "touchcancel"])
@@ -35,11 +36,11 @@
 
         :component-did-mount
         (fn setup-scroll-sync [this]
-          (let [scrollbar (goog.object/get this.refs "scrollbar-top")
-                overflow-wrapper (goog.object/get this.refs "overflow-wrapper")
+          (let [scrollbar (o/get this.refs "scrollbar-top")
+                overflow-wrapper (o/get this.refs "overflow-wrapper")
                 wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
                 wrapped-width (.-width (js/getComputedStyle wrapped-dom))
-                top-scrollbar-width-box (goog.object/get this.refs "top-scrollbar-width-box")
+                top-scrollbar-width-box (o/get this.refs "top-scrollbar-width-box")
                 initial-centre (initial-centre-fn (js/parseInt wrapped-width))
                 visible-width overflow-wrapper.offsetWidth
                 initial-left-edge-offset (- initial-centre (/ visible-width 2))
@@ -104,10 +105,10 @@
 
         :component-did-update
         (fn update-width [this]
-          (let [overflow-wrapper (goog.object/get this.refs "overflow-wrapper")
+          (let [overflow-wrapper (o/get this.refs "overflow-wrapper")
                 wrapped-dom (aget (.-childNodes overflow-wrapper) 0)
                 wrapped-width (.-width (js/getComputedStyle wrapped-dom))
-                top-scrollbar-width-box (goog.object/get this.refs "top-scrollbar-width-box")]
+                top-scrollbar-width-box (o/get this.refs "top-scrollbar-width-box")]
             (set! (.. top-scrollbar-width-box -style -width) wrapped-width)))
 
         :reagent-render
